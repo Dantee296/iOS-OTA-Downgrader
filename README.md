@@ -30,11 +30,12 @@
 - A **macOS** or a **64-bit Linux install/live USB**
   - See supported Linux distros below
   - A live USB can be easily created with tools like [balenaEtcher](https://www.balena.io/etcher/) or [Rufus](https://rufus.ie/))
+  - Windows [MSYS2](https://www.msys2.org/) is also supported (32-bit downgrades ONLY, [iTunes](https://www.apple.com/itunes/) must be installed)
 - All 32-bit users must install [OpenSSH](https://cydia.saurik.com/package/openssh/)
   - A6/A6X iOS 10 users must install [Dropbear (deb)](https://github.com/LukeZGD/iOS-OTA-Downgrader-Keys/releases/download/tools/Dropbear.deb) as well
 - For 32-bit users using Pangu, install the [latest Pangu 7.1.x Untether (deb)](http://apt.saurik.com/debs/io.pangu.axe7_0.3_iphoneos-arm.deb) or [latest Pangu 8.0-8.1.x Untether (deb)](http://apt.saurik.com/debs/io.pangu.xuanyuansword8_0.5_iphoneos-arm.deb)
 1. [Download](https://github.com/LukeZGD/iOS-OTA-Downgrader/archive/master.zip) or `git clone` this repo
-2. Open Terminal and `cd` to the directory where the script is located (example: `cd /home/user/iOS-OTA-Downgrader`)
+2. Open Terminal (or MSYS2 for Windows) and `cd` to the directory where the script is located (example: `cd /home/user/iOS-OTA-Downgrader`)
 3. Run `chmod +x restore.sh`
 
 ## How to use:

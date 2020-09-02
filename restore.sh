@@ -38,7 +38,7 @@ function Main {
     echo
     
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        platform='linux'
+        platform="linux"
         bspatch="bspatch"
         ideviceenterrecovery="ideviceenterrecovery"
         ideviceinfo="ideviceinfo"
@@ -56,10 +56,10 @@ function Main {
         fi
     else
         if [[ $OSTYPE == "darwin"* ]]; then
-            platform='macos'
+            platform="macos"
             lsusb="system_profiler SPUSBDataType 2>/dev/null"
-        elif [[ $(uname -s) == "MINGW64_NT"* ]]; then
-            platform='win'
+        elif [[ $OSTYPE == "msys" ]]; then
+            platform="win"
             lsusb="wmic path Win32_USBControllerDevice get Dependent"
             ping="ping -n 1"
         fi
@@ -115,7 +115,7 @@ function Main {
     Echo "* UniqueChipID (ECID): $UniqueChipID"
     echo
     
-    if [[ $DFUDevice == 1 ]] && [[ $A7Device != 1 ]] && [[ $platform != win ]]; then
+    if [[ $DFUDevice == 1 ]] && [[ $A7Device != 1 ]]; then
         DFUManual=1
         Mode='Downgrade'
         Log "32-bit device in DFU mode detected."
@@ -503,17 +503,17 @@ function InstallDependencies {
         ln -sf /usr/lib64/libusbmuxd.so.6 ../resources/lib/libusbmuxd-2.0.so.6
         ln -sf /usr/lib64/libzip.so.5 ../resources/lib/libzip.so.4
         
-    elif [[ $OSTYPE == "darwin"* ]]; then
+    elif [[ $platform == "macos" ]]; then
         # macOS
         xcode-select --install
         SaveFile https://github.com/libimobiledevice-win32/imobiledevice-net/releases/download/v1.3.4/libimobiledevice.1.2.1-r1079-osx-x64.zip libimobiledevice.zip 2812e01fc7c09b5980b46b97236b2981dbec7307
         
     elif [[ $platform == "win" ]]; then
-        # Windows MSYS2 MinGW64
-        pacman -Sy --noconfirm --needed mingw-w64-x86_64-python openssh unzip
+        # Windows MSYS2
+        pacman -Sy --noconfirm --needed git python openssh perl unzip
         SaveFile https://github.com/libimobiledevice-win32/imobiledevice-net/releases/download/v1.3.4/libimobiledevice.1.2.1-r1079-win-x64.zip libimobiledevice.zip 6d23f7d28e2212d9acc0723fe4f3fdec8e2ddeb8
-        if [[ ! $(ls ../resources/tools/*win) ]]; then
-            SaveFile https://github.com/LukeZGD/iOS-OTA-Downgrader/releases/download/tools/tools_win.zip tools_win.zip 92dd493c2128ad81255180b2536445dc1643ed55
+        if [[ ! $(ls ../resources/tools/*win 2>/dev/null) ]]; then
+            SaveFile https://github.com/LukeZGD/iOS-OTA-Downgrader-Keys/releases/download/tools/tools_win.zip tools_win.zip 92dd493c2128ad81255180b2536445dc1643ed55
             unzip tools_win.zip -d ../resources/tools
         fi
         ln -sf /mingw64/bin/libplist-2.0.dll /mingw64/bin/libplist.dll
@@ -529,7 +529,11 @@ function InstallDependencies {
         rm -rf ../resources/libimobiledevice_$platform
         mkdir ../resources/libimobiledevice_$platform
         unzip libimobiledevice.zip -d ../resources/libimobiledevice_$platform
-        chmod +x ../resources/libimobiledevice_$platform/*
+        cd ../resources/libimobiledevice_$platform
+        chmod +x *
+        for i in $(ls *.exe); do
+            mv $i ${i%.exe}
+        done
     fi
     
     Log "Install script done! Please run the script again to proceed"
